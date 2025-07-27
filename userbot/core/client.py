@@ -62,8 +62,6 @@ class MiniUserBotCient(TelegramClient):
                     LOGS.error("Message was same as previous message")
                 except MessageIdInvalidError:
                     LOGS.error("Message was deleted or cant be found")
-                except BotInlineDisabledError:
-                    await edit_delete(event, "`Turn on Inline mode for our bot`", 10)
                 except ChatSendStickersForbiddenError:
                     await edit_delete(
                         event, "`I guess i can't send stickers in this chat`", 10

@@ -1,8 +1,6 @@
 import asyncio
 
 import datetime
-import importlib
-import inspect
 import io
 import os
 import sys
@@ -17,7 +15,7 @@ plugin_category = "tools"
 
 
 @miniub.client_cmd(
-    pattern="exec(?:\s|$)([\s\S]*)",
+    pattern=r"exec(?:\s|$)([\s\S]*)",
     command=("exec", plugin_category),
 )
 async def _(event):
@@ -32,7 +30,7 @@ async def _(event):
     stdout, stderr = await process.communicate()
     result = str(stdout.decode().strip()) + str(stderr.decode().strip())
     catuser = await event.client.get_me()
-    curruser = catuser.username or "catuserbot"
+    curruser = Config.USERID or "miniuserbot"
     uid = os.geteuid()
     if uid == 0:
         cresult = f"```{curruser}:~#``` ```{cmd}```\n```{result}```"
@@ -45,7 +43,7 @@ async def _(event):
 
 
 @miniub.client_cmd(
-    pattern="eval(?:\s|$)([\s\S]*)",
+    pattern=r"eval(?:\s|$)([\s\S]*)",
     command=("eval", plugin_category),
 )
 async def _(event):
@@ -94,14 +92,16 @@ async def aexec(code, smessatatus):
     message = event = smessatatus
     p = lambda _x: print(yaml_format(_x))
     reply = await event.get_reply_message()
+    
+    namespace = {}
     exec(
-        (
-            "async def __aexec(message, event , reply, client, p, chat): "
-            + "".join(f"\n {l}" for l in code.split("\n"))
-        )
+        "async def __aexec(message, event, reply, client, p, chat): "
+        + "".join(f"\n {l}" for l in code.split("\n")),
+        globals(),
+        namespace
     )
 
-    return await locals()["__aexec"](
+    return await namespace["__aexec"](
         message, event, reply, message.client, p, message.chat_id
     )
 

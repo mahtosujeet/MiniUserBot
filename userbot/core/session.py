@@ -22,9 +22,9 @@ except Exception as e:
     sys.exit()
 
 
-miniub.tgbot = tgbot = MiniUserBotCient(
-    "minitgbot",
-    api_id=Config.API_ID,
-    api_hash=Config.API_HASH,
-).start(bot_token=Config.BOT_TOKEN)
-
+# miniub.tgbot = tgbot = MiniUserBotCient(
+#     "minitgbot",
+#     api_id=Config.API_ID,
+#     api_hash=Config.API_HASH,
+# ).start(bot_token=Config.BOT_TOKEN)
+#
